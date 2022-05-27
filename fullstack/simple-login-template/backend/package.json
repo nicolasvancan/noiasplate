@@ -2,7 +2,7 @@
   "name": "simple-login-backend",
   "version": "1.0.0",
   "description": "Backend created to save user data to a mongoDB server",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
     "test": "npm test",
     "dev": "nodemon run src/app.js"
