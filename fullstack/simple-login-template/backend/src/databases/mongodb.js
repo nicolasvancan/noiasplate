@@ -9,14 +9,28 @@ const mongodb = {
         // Connection String
         const connectionString =
             `mongodb://${configuration.mongodb.username}:${configuration.mongodb.password}@${configuration.mongodb.host}:${configuration.mongodb.port}/${configuration.mongodb.database}`;
-        let responseString;
-        mongoose.connect(connectionString).then(onfulfilled => {
-            responseString = onfulfilled;
-        }).catch(onRejected => {
-            responseString = onRejected;
+
+        console.log(connectionString)
+
+        mongoose.connect(connectionString,
+            {
+                useNewUrlParser: true
+            }).then((onfulfuill) => {
+                console.log(onfulfuill);
+            }).catch(onRejected => {
+                console.log(onRejected);
+            });
+
+        const db = mongoose.connection;
+
+        db.on('error', (event) => {
+            console.error('Mongoose error');
+            console.error(event);
         });
 
-        return connectionString;
+        db.once('open', () => {
+            console.log("Connected to MongoDB");
+        })
     }
 }
 

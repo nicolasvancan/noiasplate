@@ -1,6 +1,6 @@
 const v1Routes = require('express').Router();
-const userRoutes = require('./user.routes');
+const authRoutes = require('./auth.routes');
 
-v1Routes.use('/user', userRoutes);
+v1Routes.use('/account', authRoutes);
 
 module.exports = v1Routes;
