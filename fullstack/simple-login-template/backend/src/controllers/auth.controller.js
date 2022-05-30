@@ -3,6 +3,7 @@ const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 const { service } = require('../configuration/config.json');
 const crypto = require('crypto');
+const redisClient = require('../databases/redis');
 
 const login = async (req, res) => {
     const { body } = req;
@@ -51,6 +52,7 @@ const login = async (req, res) => {
         }
     );
 
+    redisClient.setex(token, 10000, refreshToken);
     return res.status(200).send({ token, refreshToken, auth: true }).end();
 };
 
@@ -60,6 +62,13 @@ const refreshToken = async (req, res) => {
     const { refreshToken, email, userId, name } = body;
 
     // Add to check if refreshToken is exact the same as in redis
+
+    const savedRefreshToken = await redisClient.getAsync(oldToken);
+    await redisClient.delAsync(oldToken);
+
+    if (savedRefreshToken !== refreshToken) {
+        return res.status(400).json({ message: "Refresh token not valid" });
+    }
 
     const newRefreshToken = crypto.randomUUID();
 
@@ -75,7 +84,7 @@ const refreshToken = async (req, res) => {
             expiresIn: (2 * 60 * 60) // 2 h
         }
     );
-
+    redisClient.setex(token, 10000, refreshToken);
     return res.status(200).json({ token, refreshToken: newRefreshToken, auth: true }).end();
 }
 

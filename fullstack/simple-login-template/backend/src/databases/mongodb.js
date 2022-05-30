@@ -15,10 +15,6 @@ const mongodb = {
         mongoose.connect(connectionString,
             {
                 useNewUrlParser: true
-            }).then((onfulfuill) => {
-                console.log(onfulfuill);
-            }).catch(onRejected => {
-                console.log(onRejected);
             });
 
         const db = mongoose.connection;
