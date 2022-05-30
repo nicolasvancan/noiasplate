@@ -2,6 +2,7 @@ const User = require('../models/user.model');
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 const { service } = require('../configuration/config.json');
+const crypto = require('crypto');
 
 const login = async (req, res) => {
     const { body } = req;
@@ -20,7 +21,7 @@ const login = async (req, res) => {
     }
 
     const userInfo = await User.findOne({ email });
-    console.log(userInfo.password)
+
     // Check if there is an existing email
 
     if (!userInfo) {
@@ -29,26 +30,56 @@ const login = async (req, res) => {
 
     const verifiedPassword = await argon2.verify(userInfo.password, password);
 
+    // Check if the password matches the stored argon2 encoded password
+
     if (!verifiedPassword) {
         return res.status(403).json({ message: "Wrong password" });
     }
+
+    const refreshToken = crypto.randomUUID();
 
     const token = await jwt.sign(
         {
             userId: userInfo._id,
             name: userInfo.name,
-            email: userInfo.email
+            email: userInfo.email,
         },
         service.jwt,
         {
             algorithm: "HS256",
             expiresIn: (2 * 60 * 60) // 2 h
         }
-    )
+    );
 
-    return res.status(200).send({ token, auth: true }).end();
+    return res.status(200).send({ token, refreshToken, auth: true }).end();
 };
 
+const refreshToken = async (req, res) => {
+    const oldToken = req.headers['x-auth-token'];
+    const { body } = req;
+    const { refreshToken, email, userId, name } = body;
+
+    // Add to check if refreshToken is exact the same as in redis
+
+    const newRefreshToken = crypto.randomUUID();
+
+    const token = await jwt.sign(
+        {
+            userId: userId,
+            name: name,
+            email: email,
+        },
+        service.jwt,
+        {
+            algorithm: "HS256",
+            expiresIn: (2 * 60 * 60) // 2 h
+        }
+    );
+
+    return res.status(200).json({ token, refreshToken: newRefreshToken, auth: true }).end();
+}
+
 module.exports = {
-    login
+    login,
+    refreshToken
 }
