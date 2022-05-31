@@ -1,0 +1,33 @@
+version: '3'
+# Here the services for the project are defined
+# * Three services:
+#   - node-backend
+#   - react-frontend
+#   - mongodb
+
+services:
+  node-backend:
+    container_name: slt-node-backend
+# Here I define how it will be built, select Dockerfile inside the
+# backend folder
+    image: slt-node-backend
+    restart: always
+    ports:
+      - 5005:5005
+# Defines that it must have a mongodb instance up to run the backend
+    depends_on:
+      - mongodb
+# Here I define where my app is located at my Desktop
+    volumes:
+      - /home/nicolas/Desktop/nicolas/noiasplate/fullstack/simple-login-template/backend:/app
+    command: nodemon src/app.js
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    volumes:
+      - /data:/data/db
+    ports:
+      - 27017:27017
+networks:
+  mongodb:
