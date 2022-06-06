@@ -4,10 +4,7 @@ import { Box } from '@chakra-ui/layout';
 function App() {
   return (
     <>
-      <Box>
-        <Login />
-      </Box>
-
+      <Login />
     </>
   );
 }
