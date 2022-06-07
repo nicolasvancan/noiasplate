@@ -8,7 +8,7 @@ import { Image } from "@chakra-ui/image";
 import { Input, InputRightElement, InputGroup } from "@chakra-ui/input";
 import { Text } from "@chakra-ui/layout";
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { CreateAccount } from "../services/AccountApi";
+import { CreateAccount, PostLogin } from "../services/AccountApi";
 
 import {
     Drawer,
@@ -36,13 +36,28 @@ export default function Login(props: any) {
         repeatPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required()
     });
 
+    const loginResolverSchema = Yup.object({
+        email: Yup.string().required('Email is required').matches(/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/, { message: 'Insert a valid email' }),
+        password: Yup.string().required('Passwod is required')
+    });
+
     const signupResolver = useForm({
         resolver: yupResolver(signUpResolverSchema)
+    });
+
+    const loginResolver = useForm({
+        resolver: yupResolver(loginResolverSchema)
     });
 
     const onSignUpSubmit = async (values: any) => {
         const newAccount = await CreateAccount(values);
         console.log(newAccount)
+        onSignUpClose()
+    };
+
+    const onLoginSubmit = async (values: any) => {
+        const loginResponse = await PostLogin(values);
+        console.log(loginResponse);
     };
 
     const {
@@ -100,109 +115,120 @@ export default function Login(props: any) {
                         >
                             noiasplate
                         </Heading>
-                        <Stack
-                            spacing={4}
-                        >
-                            <Text
-                                fontFamily={'sans-serif'}
-                                fontWeight={'bold'}
-                                color={'white'}
+                        <form onSubmit={loginResolver.handleSubmit(onLoginSubmit)}>
+                            <Stack
+                                spacing={4}
                             >
-                                Email
-                            </Text>
-                            <Input
-                                bg={'white'}
-                                boxShadow='2xl'
-                            />
-
-
-                            <Text
-                                fontFamily={'sans-serif'}
-                                fontWeight={'bold'}
-                                color={'white'}
-                            >
-                                Password
-                            </Text>
-                            <InputGroup>
-                                <Input
-                                    type={isPasswordVisible ? 'text' : 'password'}
-                                    id={'password'}
-                                    bg={'white'}
-                                    onChange={() => {
-
-                                    }}
-                                />
-                                <InputRightElement>
-                                    <Button
-                                        onClick={() => {
-                                            setIsPasswordVisible(!isPasswordVisible);
-                                        }}
+                                <FormControl>
+                                    <FormLabel
+                                        fontFamily={'sans-serif'}
+                                        fontWeight={'bold'}
+                                        color={'white'}
                                     >
-                                        {isPasswordVisible ? <ViewOffIcon></ViewOffIcon> : <ViewIcon></ViewIcon>}
-                                    </Button>
-                                </InputRightElement>
-                            </InputGroup>
-                        </Stack>
-                        <Stack
-                            direction={'column'}
-                            pt={8}
-                            justifyContent={'space-evenly'}
-                        >
-                            <Button
-                                height={'25px'}
-                                color={'purple.700'}
-                            >
-                                Sign in
-                            </Button>
-                            <Text
-                                pt={2}
-                                pb={2}
-                                color={'white'}
-                            >
-                                Not registered? Sign up
-                            </Text>
-                            <Button
-                                height={'25px'}
-                                color={'purple.700'}
-                                onClick={() => {
-                                    if (isSignUpOpen) {
-                                        onSignUpClose();
-                                    } else {
-                                        onSignUpOpen();
-                                    }
-                                }}
-                            >
-                                Sign up
-                            </Button>
-                        </Stack>
-                        <Stack
-                            pt={8}
-                            direction={'row'}
-                            justifyContent={'space-around'}
-                        >
-                            <Box
-                                w={'70px'}
-                                h={'70px'}
+                                        Email
+                                    </FormLabel>
+                                    <Input
+                                        required
+                                        {...loginResolver.register('email')}
+                                        bg={'white'}
+                                        boxShadow='2xl'
+                                    />
+                                </FormControl>
 
+                                <FormControl>
+                                    <FormLabel
+                                        fontFamily={'sans-serif'}
+                                        fontWeight={'bold'}
+                                        color={'white'}
+                                    >
+                                        Password
+                                    </FormLabel>
+                                    <InputGroup>
+                                        <Input
+                                            required
+                                            {...loginResolver.register('password')}
+                                            type={isPasswordVisible ? 'text' : 'password'}
+                                            id={'password'}
+                                            bg={'white'}
+                                            onChange={() => {
+
+                                            }}
+                                        />
+                                        <InputRightElement>
+                                            <Button
+                                                onClick={() => {
+                                                    setIsPasswordVisible(!isPasswordVisible);
+                                                }}
+                                            >
+                                                {isPasswordVisible ? <ViewOffIcon></ViewOffIcon> : <ViewIcon></ViewIcon>}
+                                            </Button>
+                                        </InputRightElement>
+                                    </InputGroup>
+                                </FormControl>
+                            </Stack>
+                            <Stack
+                                direction={'column'}
+                                pt={8}
+                                justifyContent={'space-evenly'}
                             >
-                                <Image
-                                    src="fb-icon.png"
-                                    w={'inherit'}
-                                    h={'inherit'}
+                                <Button
+                                    type='submit'
+                                    height={'25px'}
+                                    color={'purple.700'}
+                                    isLoading={loginResolver.formState.isSubmitting}
                                 >
-                                </Image>
-                            </Box>
-                            <Box
-                                w={'80px'}
-                                h={'80px'}
+                                    Sign in
+                                </Button>
+                                <Text
+                                    pt={2}
+                                    pb={2}
+                                    color={'white'}
+                                >
+                                    Not registered? Sign up
+                                </Text>
+                                <Button
+                                    height={'25px'}
+                                    color={'purple.700'}
+                                    onClick={() => {
+                                        if (isSignUpOpen) {
+                                            onSignUpClose();
+                                        } else {
+                                            onSignUpOpen();
+                                        }
+                                    }}
+                                >
+                                    Sign up
+                                </Button>
+                            </Stack>
+                            <Stack
+                                pt={8}
+                                direction={'row'}
+                                justifyContent={'space-around'}
                             >
-                                <Image
-                                    src="gmail.png"
-                                    w={'inherit'}
-                                    h={'inherit'}
-                                ></Image>
-                            </Box>
-                        </Stack>
+                                <Box
+                                    w={'70px'}
+                                    h={'70px'}
+
+                                >
+                                    <Image
+                                        src="fb-icon.png"
+                                        w={'inherit'}
+                                        h={'inherit'}
+                                    >
+                                    </Image>
+                                </Box>
+                                <Box
+                                    w={'80px'}
+                                    h={'80px'}
+                                >
+                                    <Image
+                                        src="gmail.png"
+                                        w={'inherit'}
+                                        h={'inherit'}
+                                    ></Image>
+                                </Box>
+                            </Stack>
+                        </form>
                     </Box>
 
                 </Stack >
