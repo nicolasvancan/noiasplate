@@ -10,6 +10,8 @@ import { Text } from "@chakra-ui/layout";
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { CreateAccount, PostLogin } from "../services/AccountApi";
 
+import { useNavigate } from 'react-router-dom'
+
 import {
     Drawer,
     DrawerBody,
@@ -25,7 +27,7 @@ import {
 
 export default function Login(props: any) {
 
-
+    const navigate = useNavigate();
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const signUpResolverSchema = Yup.object({
@@ -57,7 +59,13 @@ export default function Login(props: any) {
 
     const onLoginSubmit = async (values: any) => {
         const loginResponse = await PostLogin(values);
-        console.log(loginResponse);
+        const { status, data } = loginResponse;
+
+        if (status === 200) {
+            localStorage.setItem('accessToken', data.token);
+            localStorage.setItem('refreshToken', data.refreshToken);
+            navigate('/landing');
+        }
     };
 
     const {

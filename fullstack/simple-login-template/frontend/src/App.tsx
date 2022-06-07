@@ -1,10 +1,18 @@
 import Login from './pages/Login';
-import { Box } from '@chakra-ui/layout';
+import {
+  Routes,
+  Route
+} from 'react-router-dom'
+import LandingPage from './pages/LandingPage';
+
 
 function App() {
   return (
     <>
-      <Login />
+      <Routes>
+        <Route path={'/'} element={<Login />} />
+        <Route path={'landing'} element={<LandingPage />} />
+      </Routes>
     </>
   );
 }

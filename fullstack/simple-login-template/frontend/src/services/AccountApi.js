@@ -28,7 +28,14 @@ export async function CreateAccount(body) {
 };
 
 export async function PostLogin(body) {
-    let data;
+    let data = {
+        status: 0,
+        data: {
+            token: "",
+            refreshToken: "",
+            auth: false
+        }
+    };
 
     await axios.post('account/login', body)
         .then(response => {
