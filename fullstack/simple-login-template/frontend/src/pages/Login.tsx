@@ -53,19 +53,26 @@ export default function Login(props: any) {
 
     const onSignUpSubmit = async (values: any) => {
         const newAccount = await CreateAccount(values);
-        console.log(newAccount)
         onSignUpClose()
     };
 
     const onLoginSubmit = async (values: any) => {
-        const loginResponse = await PostLogin(values);
-        const { status, data } = loginResponse;
+        return new Promise<void>((resolve, reject) => {
+            setTimeout(async () => {
+                const loginResponse = await PostLogin(values);
+                const { status, data } = loginResponse;
 
-        if (status === 200) {
-            localStorage.setItem('accessToken', data.token);
-            localStorage.setItem('refreshToken', data.refreshToken);
-            navigate('/landing');
-        }
+                if (status === 200) {
+                    localStorage.setItem('accessToken', data.token);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+                    navigate('/landing');
+                    resolve(alert(1));
+                } else {
+                    reject();
+                }
+            }, 2200);
+        })
+
     };
 
     const {
