@@ -66,7 +66,7 @@ export default function Login(props: any) {
                     localStorage.setItem('accessToken', data.token);
                     localStorage.setItem('refreshToken', data.refreshToken);
                     navigate('/landing');
-                    resolve(alert(1));
+                    resolve();
                 } else {
                     reject();
                 }

@@ -59,3 +59,36 @@ export async function PostLogin(body) {
 
     return data;
 }
+
+export async function Logout(body) {
+    let data = {
+        status: 0,
+        data: {
+            token: "",
+            refreshToken: "",
+            auth: false
+        }
+    };
+
+    await axios.post('account/login', body)
+        .then(response => {
+            console.log(response)
+            if (response) {
+                data = {
+                    status: response.status,
+                    data: response.data
+                }
+            }
+        })
+        .catch(err => {
+            if (err) {
+                data = {
+                    status: err.response.status,
+                    errorMessage: err.response.data,
+                    fullMessage: err
+                }
+            }
+        });
+
+    return data;
+}
