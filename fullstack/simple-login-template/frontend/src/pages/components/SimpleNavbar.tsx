@@ -1,14 +1,13 @@
-import React from 'react';
 import {
     Box,
     Flex,
     Image,
-    Text,
-    Spacer,
     Heading,
     HStack,
     Button,
     Center,
+    useMediaQuery,
+    Text
 } from '@chakra-ui/react';
 
 import { AiOutlineMenu } from 'react-icons/ai'
@@ -20,104 +19,287 @@ import {
     MenuItem
 } from '@chakra-ui/react';
 
+import { Logout } from '../../services/AccountApi';
+
 export default function SimpleNavbar(props: any) {
+
+    const [isLargerThan980px, isLargerThan700, isBrowser] = useMediaQuery([
+        '(min-width: 980px)',
+        '(min-width: 700px)',
+        '(display-mode: browser)'
+    ]);
+
+    const handleLogout = async () => {
+        const logoutResult = await Logout(localStorage.getItem('refreshToken'));
+        if (logoutResult.status === 200) {
+            window.location.href = '/';
+        }
+    }
+
     return (
-        <Flex
-            maxW={'inherit'}
-            minH={'70px'}
-            scrollBehavior={'unset'}
-            overflowX='hidden'
-            bgGradient={'linear(to-r,purple.800 ,purple.900 ,purple.900)'}
-            overflow={'auto'}
-            justifyContent={'space-between'}
-            boxShadow={'dark-lg'}
-            borderBottom={'ActiveBorder'}
-        >
-            <Box
-                mt={1}
-                ml={1}
-                backgroundColor={'white'}
-                h={'90%'}
-                w={'95px'}
-                borderRadius={'20px 20px 20px 20px'}
-            >
-                <Image
-                    ml={2}
-                    mt={1}
-                    mb={2}
-                    src='cap.jpg'
-                    w={'80px'}
+        <>
+            {
+                console.log("Is larger than 980px: ", isLargerThan980px)
 
-                ></Image>
-            </Box>
-            <Box
-                overflow={'auto'}
-                justifyContent={'right'}
-                minW={'550px'}
-            >
-                <Center>
-                    <Heading
-                        pt={4}
-                        pl={2}
-                        ml={60}
-                        float={'right'}
-                        fontSize={30}
-                        color={'white'}
-                        size={'md'}
-                    >
-                        noiasplate
-                    </Heading>
-                </Center>
-            </Box>
-            <Box
-                backgroundColor={'inherit'}
-                w={'25%'}
-                h={'inherit'}
-                float={'right'}
-                alignItems={'center'}
-            >
-                <HStack
-                    minH={'100%'}
-                    backgroundColor={'inherit'}
-                    verticalAlign={'center'}
-                    spacing={24}
-                    alignContent={'center'}
+            }
+            {
+                console.log("Is larger than 700px: ", isLargerThan700)
+
+            }
+            {isLargerThan980px &&
+                <Flex
+                    zIndex={99}
+                    bgGradient={'linear(to-r,purple.800 ,purple.900 ,purple.900)'}
+                    overflow={'auto'}
+                    justifyContent={'space-between'}
+                    boxShadow={'dark-lg'}
+                    borderBottom={'ActiveBorder'}
+                    maxH={'80px'}
                 >
-                    <Button
-                        variant={'nav'}
-                        color={'white'}
+                    < Box
+                        mt={1}
+                        ml={1}
+                        backgroundColor={'white'}
+                        minH={'90%'}
+                        minW={'95px'}
+                        maxW={'95px'}
+                        borderRadius={'20px 20px 20px 20px'}
                     >
-                        About us
-                    </Button>
-                    <Button
-                        variant={'nav'}
+                        <Image
+                            ml={2}
+                            mt={1}
+                            mb={2}
+                            src='cap.jpg'
+                            maxH={'90%'}
+                            maxW={'85%'}
 
-                        color={'white'}
+                        ></Image>
+                    </Box >
+                    <Box
+                        overflow={'auto'}
+                        justifyContent={'right'}
+                        minW={'550px'}
                     >
-                        Products
-                    </Button>
-                    <Menu>
-                        <MenuButton
-                            as={Button}
-                        >
-                            <AiOutlineMenu />
-                        </MenuButton>
-                        <MenuList>
-                            <MenuItem>
-                                Profile
-                            </MenuItem>
-                            <MenuItem
-                                onClick={
-                                    () => console.log("Logout")
-                                }
+                        <Center>
+                            <Heading
+                                pt={4}
+                                pl={2}
+                                ml={60}
+                                float={'right'}
+                                fontSize={30}
+                                color={'white'}
+                                size={'md'}
                             >
-                                Log out
-                            </MenuItem>
-                        </MenuList>
-                    </Menu>
-                </HStack>
-            </Box>
+                                noiasplate
+                            </Heading>
+                        </Center>
+                    </Box>
+                    <Box
+                        backgroundColor={'inherit'}
+                        minW={'25%'}
+                        h={'inherit'}
+                        float={'right'}
+                        alignItems={'center'}
+                    >
+                        <HStack
+                            minH={'100%'}
+                            backgroundColor={'inherit'}
+                            verticalAlign={'center'}
+                            spacing={24}
+                            alignContent={'center'}
+                        >
+                            <Button
+                                variant={'nav'}
+                                color={'white'}
+                            >
+                                About us
+                            </Button>
+                            <Button
+                                variant={'nav'}
 
-        </Flex >
+                                color={'white'}
+                            >
+                                Products
+                            </Button>
+                            <Menu>
+                                <MenuButton
+                                    as={Button}
+                                >
+                                    <AiOutlineMenu />
+                                </MenuButton>
+                                <MenuList>
+                                    <MenuItem>
+                                        Profile
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={
+                                            () => handleLogout()
+                                        }
+                                    >
+                                        Log out
+                                    </MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </HStack>
+                    </Box>
+
+                </Flex >}
+            {(isLargerThan700 && !isLargerThan980px) &&
+                <Flex
+                    zIndex={99}
+                    bgGradient={'linear(to-r,purple.800 ,purple.900 ,purple.900)'}
+                    overflow={'auto'}
+                    justifyContent={'space-between'}
+                    boxShadow={'dark-lg'}
+                    borderBottom={'ActiveBorder'}
+                    maxH={'80px'}
+                >
+                    < Box
+                        mt={1}
+                        ml={1}
+                        backgroundColor={'white'}
+                        minH={'90%'}
+                        minW={'95px'}
+                        maxW={'95px'}
+                        borderRadius={'20px 20px 20px 20px'}
+                    >
+                        <Image
+                            ml={2}
+                            mt={1}
+                            mb={2}
+                            src='cap.jpg'
+                            maxH={'90%'}
+                            maxW={'85%'}
+
+                        ></Image>
+                    </Box >
+
+                    <Box
+                        backgroundColor={'inherit'}
+                        minW={'25%'}
+                        h={'inherit'}
+                        float={'right'}
+                        alignItems={'center'}
+                    >
+                        <HStack
+                            minH={'100%'}
+                            backgroundColor={'inherit'}
+                            verticalAlign={'center'}
+                            spacing={24}
+                            alignContent={'center'}
+                        >
+                            <Button
+                                variant={'nav'}
+                                color={'white'}
+                            >
+                                About us
+                            </Button>
+                            <Button
+                                variant={'nav'}
+
+                                color={'white'}
+                            >
+                                Products
+                            </Button>
+                            <Menu>
+                                <MenuButton
+                                    as={Button}
+                                >
+                                    <AiOutlineMenu />
+                                </MenuButton>
+                                <MenuList>
+                                    <MenuItem>
+                                        Profile
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={
+                                            () => handleLogout()
+                                        }
+                                    >
+                                        Log out
+                                    </MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </HStack>
+                    </Box>
+
+                </Flex >
+            }
+            {(!isLargerThan700 && !isLargerThan980px) &&
+                <Flex
+                    zIndex={99}
+                    bgGradient={'linear(to-r,purple.800 ,purple.900 ,purple.900)'}
+                    overflow={'auto'}
+                    justifyContent={'space-evenly'}
+                    boxShadow={'dark-lg'}
+                    borderBottom={'ActiveBorder'}
+                    maxH={'80px'}
+                >
+                    < Box
+                        mt={1}
+                        ml={1}
+                        backgroundColor={'white'}
+                        minH={'90%'}
+                        minW={'95px'}
+                        maxW={'95px'}
+                        borderRadius={'20px 20px 20px 20px'}
+                    >
+                        <Image
+                            ml={2}
+                            mt={1}
+                            mb={2}
+                            src='cap.jpg'
+                            maxH={'90%'}
+                            maxW={'85%'}
+
+                        ></Image>
+                    </Box >
+
+                    <Box
+                        backgroundColor={'inherit'}
+                        minW={'200px'}
+                        h={'inherit'}
+                        float={'right'}
+                        alignItems={'center'}
+                    >
+                        <HStack
+                            minH={'100%'}
+                            backgroundColor={'inherit'}
+                            verticalAlign={'center'}
+                            spacing={24}
+                            alignContent={'center'}
+                        >
+                            <Button
+                                variant={'nav'}
+
+                                color={'white'}
+                            >
+                                Products
+                            </Button>
+                            <Menu>
+                                <MenuButton
+                                    as={Button}
+                                >
+                                    <AiOutlineMenu />
+                                </MenuButton>
+                                <MenuList>
+                                    <MenuItem>
+                                        Profile
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={
+                                            () => handleLogout()
+                                        }
+                                    >
+                                        Log out
+                                    </MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </HStack>
+                    </Box>
+
+                </Flex >
+            }
+        </>
     );
 }

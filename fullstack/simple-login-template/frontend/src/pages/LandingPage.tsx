@@ -1,34 +1,23 @@
-import { Box, Flex, Stack, Image, Text, Heading, Center } from '@chakra-ui/react';
+import { Box, Flex, Stack, Image, Text, Heading, Center, VStack } from '@chakra-ui/react';
 import { SimpleNavbar } from './components';
 
 
 export default function LandingPage(props: any) {
     return (
-        <Box
-            minW={'100%'}
-            minH={'100%'}
+        <VStack
+            w={'100%'}
+            align={'stretch'}
+            spacing={'0'}
         >
             <SimpleNavbar />
             <Box
                 minW={'100%'}
                 minH={'100%'}
             >
-                <Flex direction={'row'}
+                <Flex direction={'column'}
                     minW={'100%'}
                     minH={'100%'}
                 >
-                    <Box
-                        style={{
-                            backgroundImage: `url(${process.env.PUBLIC_URL + '/city.jpg'})`,
-                            backgroundSize: 'cover',
-                            backgroundRepeat: 'no-repeat',
-                            width: '100%',
-                            height: '50vw',
-                            minHeight: '100%'
-                        }}
-                    >
-
-                    </Box>
 
                     <Box
                         backgroundColor={'purple.800'}
@@ -63,6 +52,8 @@ export default function LandingPage(props: any) {
                             </Text>
                         </Box>
 
+
+
                         <Flex
                             position={'relative'}
                             left={'23%'}
@@ -88,11 +79,32 @@ export default function LandingPage(props: any) {
                                 <br></br>
                                 <br></br>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I hope it can be helpfull to someone, I'll try my best to improve this example as soon as I have time.
+                                <br></br>
+                                <br></br>
+                                <br></br>
+                                <br></br>
+                                <br></br>
+                                <br></br>
                             </Text>
+
+
                         </Flex>
                     </Box>
+                    <Box
+                        style={{
+                            backgroundImage: `url(${process.env.PUBLIC_URL + '/city.jpg'})`,
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            width: '100%',
+                            height: '120vw',
+                            minHeight: '100%'
+                        }}
+                    >
+
+                    </Box>
+
                 </Flex>
             </Box>
-        </Box>
+        </VStack>
     );
 }

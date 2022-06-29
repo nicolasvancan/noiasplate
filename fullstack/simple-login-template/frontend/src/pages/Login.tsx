@@ -7,10 +7,11 @@ import { Button } from "@chakra-ui/button";
 import { Image } from "@chakra-ui/image";
 import { Input, InputRightElement, InputGroup } from "@chakra-ui/input";
 import { Text } from "@chakra-ui/layout";
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { EmailIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { CreateAccount, PostLogin } from "../services/AccountApi";
 
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 
 import {
     Drawer,
@@ -24,6 +25,13 @@ import {
     FormLabel,
 
 } from "@chakra-ui/react";
+import { JsonObjectExpression } from "typescript";
+
+interface DecodedJwt {
+    email: string,
+    userId: string,
+    name: string
+}
 
 export default function Login(props: any) {
 
@@ -63,8 +71,16 @@ export default function Login(props: any) {
                 const { status, data } = loginResponse;
 
                 if (status === 200) {
+                    // Decode token to store userId and email
+                    const decodedJwt = jwt_decode(data.token);
+                    const decodedJwtJson = ((decodedJwt as unknown) as DecodedJwt);
+                    console.log(data.refreshToken)
+                    console.log(decodedJwtJson)
+                    localStorage.setItem('email', decodedJwtJson.email);
+                    localStorage.setItem('userId', decodedJwtJson.userId);
                     localStorage.setItem('accessToken', data.token);
                     localStorage.setItem('refreshToken', data.refreshToken);
+
                     navigate('/landing');
                     resolve();
                 } else {
@@ -198,22 +214,24 @@ export default function Login(props: any) {
                                     pt={2}
                                     pb={2}
                                     color={'white'}
+                                    position={'relative'}
+                                    align={'center'}
                                 >
-                                    Not registered? Sign up
+                                    Not registered?{" "}
+                                    <a
+                                        style={{
+                                            cursor: 'pointer',
+                                            color: '#000000'
+                                        }}
+                                        onClick={() => {
+                                            if (isSignUpOpen) {
+                                                onSignUpClose();
+                                            } else {
+                                                onSignUpOpen();
+                                            }
+                                        }}
+                                    >Sign up</a>
                                 </Text>
-                                <Button
-                                    height={'25px'}
-                                    color={'purple.700'}
-                                    onClick={() => {
-                                        if (isSignUpOpen) {
-                                            onSignUpClose();
-                                        } else {
-                                            onSignUpOpen();
-                                        }
-                                    }}
-                                >
-                                    Sign up
-                                </Button>
                             </Stack>
                             <Stack
                                 pt={8}
