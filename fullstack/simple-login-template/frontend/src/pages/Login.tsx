@@ -233,34 +233,6 @@ export default function Login(props: any) {
                                     >Sign up</a>
                                 </Text>
                             </Stack>
-                            <Stack
-                                pt={8}
-                                direction={'row'}
-                                justifyContent={'space-around'}
-                            >
-                                <Box
-                                    w={'70px'}
-                                    h={'70px'}
-
-                                >
-                                    <Image
-                                        src="fb-icon.png"
-                                        w={'inherit'}
-                                        h={'inherit'}
-                                    >
-                                    </Image>
-                                </Box>
-                                <Box
-                                    w={'80px'}
-                                    h={'80px'}
-                                >
-                                    <Image
-                                        src="gmail.png"
-                                        w={'inherit'}
-                                        h={'inherit'}
-                                    ></Image>
-                                </Box>
-                            </Stack>
                         </form>
                     </Box>
 
