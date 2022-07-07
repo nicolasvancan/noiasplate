@@ -10,13 +10,18 @@ services:
     container_name: slt-node-backend
 # Here I define how it will be built, select Dockerfile inside the
 # backend folder
-    image: slt-node-backend
+    build: ./backend/
     restart: always
     ports:
       - 5005:5005
 # Defines that it must have a mongodb instance up to run the backend
     depends_on:
       - mongodb
+      - redis
+
+    links:
+      - mongodb
+      - redis
 # Here I define where my app is located at my Desktop
     volumes:
       - /home/nicolas/Desktop/nicolas/noiasplate/fullstack/simple-login-template/backend:/app
@@ -25,9 +30,19 @@ services:
   mongodb:
     image: mongo
     container_name: mongodb
+    command: mongod --quiet --logpath /dev/null
+    restart: always
     volumes:
       - /data:/data/db
     ports:
       - 27017:27017
-networks:
-  mongodb:
+
+  redis:
+    image: redis:alpine
+    command: redis-server --loglevel warning
+    container_name: redisCache
+    ports:
+      - 6379:6379
+    restart: always
+    volumes:
+      - /data/redis:/data

@@ -12,7 +12,6 @@ routes.get(`${service.prefix}/`, (req, res) => {
 });
 
 routes.get(`${service.prefix}/teste`, authToken, async (req, res) => {
-    console.log("Bangssauro");
     return res.status(200).json("Bang")
 });
 
